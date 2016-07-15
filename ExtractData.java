@@ -4,16 +4,14 @@ import java.util.*;
 class ExtractData {
     static String fileName = "shuttle.trn";
     public static void main(String[] args) {
-        System.out.println(entropy(2,3));
-        System.out.println("---");
         
         String currentLine = null;
-        
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
             int entryCount = 0;
+            int numberOfEntries = 43500;
             // Kind of cheating, since we know ahead of time that there are 43500 entries
-            int[][] resultingArray = new int[10][43500];
+            int[][] resultingArray = new int[10][numberOfEntries];
             while ((currentLine = br.readLine()) != null) {
                 String[] valuesAsStrings = currentLine.split(" ");
                 int valueCount = 0;
@@ -24,19 +22,23 @@ class ExtractData {
                 entryCount++;
             }
 
+            System.out.print("What column do we want information on: ");
+            Scanner sc = new Scanner(System.in);
+            int number = sc.nextInt();
+
             // Now we have the integer values in an array, we can get the values we want
-            ArrayList<Integer> valuesInColumnOne = new ArrayList<Integer>();
+            ArrayList<Integer> columnAskedFor = new ArrayList<Integer>();
             int negNumNo = 0;
             int negNumYes = 0;
             int posNumNo = 0;
             int posNumYes = 0;
 
-            for (int i = 0; i < 43500; i++) {
-                int currentValue = resultingArray[1][i];
+            for (int i = 0; i < numberOfEntries; i++) {
+                int currentValue = resultingArray[number][i];
                 int currentClass = resultingArray[9][i];
-                /*if (!valuesInColumnOne.contains(currentValue)) {
-                    valuesInColumnOne.add(currentValue);
-                }*/
+                if (!columnAskedFor.contains(currentValue)) {
+                    columnAskedFor.add(currentValue);
+                }
                 if ((currentValue >= 0) && (currentClass == 1)) {
                     posNumYes++;
                 } else if ((currentValue >= 0) && (currentClass != 1)) {
@@ -58,15 +60,20 @@ class ExtractData {
             System.out.println("Entropy of negative values: " + 
                     entropy(negNumNo, negNumNo));
 
-            /*Collections.sort(valuesInColumnOne);
-            //System.out.println(valuesInColumnZero.size());
-            for (int i = 0; i < valuesInColumnOne.size(); i++) {
-                System.out.print(valuesInColumnOne.get(i) + " ");
+            Collections.sort(columnAskedFor);
+            System.out.println(columnAskedFor.size());
+            for (int i = 0; i < columnAskedFor.size(); i++) {
+                System.out.print(columnAskedFor.get(i) + " ");
             }
-            System.out.println("");*/
+            System.out.println("");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static double infoGain() {
+        // TODO: Well, all of it
+        return 0.0;
     }
 
     private static double entropy(int posVal, int negVal) {
